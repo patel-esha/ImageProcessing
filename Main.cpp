@@ -140,6 +140,74 @@ Image Screen(Image &A, Image &B)
 }
 
 
+// Function to apply the Overlay blending mode on two TGA images
+// B<= 0.5; C = 2 * A * B
+// B > 0.5; C = 1 - 2 * (1 - A) * (1 - B)
+
+Image Overlay(Image &A, Image &B)
+{
+    Image C;
+    Image::Header HeaderA = A.AccessHeader();
+    C.AdjustHeader(HeaderA);
+
+    vector<Pixel> VectorA = A.AccessVector();
+    vector<Pixel> VectorB = B.AccessVector();
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        VectorA[i].blueInt = (int)(VectorA[i].blue);
+        VectorA[i].greenInt = (int)(VectorA[i].green);
+        VectorA[i].redInt = (int)(VectorA[i].red);
+    }
+
+    for (unsigned int i = 0; i < VectorB.size(); i++)
+    {
+        VectorB[i].blueInt = (int)(VectorB[i].blue);
+        VectorB[i].greenInt = (int)(VectorB[i].green);
+        VectorB[i].redInt = (int)(VectorB[i].red);
+
+    }
+
+    vector<Pixel> VectorC;
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        Pixel pixelC;
+
+        if (VectorA[i].blueInt <= 127)
+        {
+            pixelC.blue = ClampConvert(2 * VectorA[i].blueInt * VectorB[i].blueInt / 255.0f);
+        }
+        else if (VectorA[i].blueInt > 127)
+        {
+            pixelC.blue = ClampConvert(255 - 2 * (255 - VectorA[i].blueInt) * (255 - VectorB[i].blueInt) / 255.0f);
+        }
+
+        if (VectorA[i].greenInt <= 127)
+        {
+            pixelC.green = ClampConvert(2 * VectorA[i].greenInt * VectorB[i].greenInt / 255.0f);
+        }
+        else if (VectorA[i].greenInt > 127)
+        {
+            pixelC.green = ClampConvert(255 - 2 * (255 - VectorA[i].greenInt) * (255 - VectorB[i].greenInt) / 255.0f);
+        }
+
+        if (VectorA[i].redInt <= 127)
+        {
+            pixelC.red = ClampConvert(2 * VectorA[i].redInt * VectorB[i].redInt / 255.0f);
+        }
+        else if (VectorA[i].redInt > 127)
+        {
+            pixelC.red = ClampConvert(255 - 2 * (255 - VectorA[i].redInt) * (255 - VectorB[i].redInt) / 255.0f);
+        }
+
+        VectorC.push_back(pixelC);
+    }
+    C.AdjustVector(VectorC);
+    return C;
+
+
+}
 
 
 
