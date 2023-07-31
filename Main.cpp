@@ -1,4 +1,37 @@
 #include "image.h"
+
+float add(float value)
+{
+    value += 0.5f;
+    return value;
+}
+
+
+// Function to clamp values to prevent over/under flow
+unsigned char ClampConvert(int value)
+{
+    unsigned int newValue;
+
+    if (value < 0)
+    {
+        newValue = 0;
+    }
+    else if (value > 255)
+    {
+        newValue = 255;
+    }
+    else
+    {
+        newValue = value;
+    }
+
+    unsigned char newChar = (unsigned char)(newValue + '\0');
+
+    return newChar;
+
+}
+
+
 // Function to apply multiplication blending tool
 Image Multiply(Image &A, Image &B)
 {
