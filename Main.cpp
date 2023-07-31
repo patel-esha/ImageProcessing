@@ -90,5 +90,56 @@ Image Subtract(Image &A, Image&B)
 }
 
 
+// Function to apply screen blending tool
+
+Image Screen(Image &A, Image &B)
+{
+    Image C;
+    Image::Header HeaderA = A.AccessHeader();
+    C.AdjustHeader(HeaderA);
+
+    vector<Pixel> VectorA = A.AccessVector();
+    vector<Pixel> VectorB = B.AccessVector();
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        VectorA[i].blueInt = (int)(VectorA[i].blue - '\0');
+        VectorA[i].greenInt = (int)(VectorA[i].green) - '\0';
+        VectorA[i].redInt = (int)(VectorA[i].red - '\0');
+    }
+
+    for (unsigned int i = 0; i < VectorB.size(); i++)
+    {
+        VectorB[i].blueInt = (int)(VectorB[i].blue - '\0');
+        VectorB[i].greenInt = (int)(VectorB[i].green - '\0');
+        VectorB[i].redInt = (int)(VectorB[i].red - '\0');
+
+    }
+
+    vector<Pixel> VectorC;
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        Pixel pixelC;
+
+        float blueFloat = (255 - (255 - (float)VectorA[i].blueInt) * (255 - (float)VectorB[i].blueInt) / 255.0f);
+        pixelC.blue = ClampConvert(add(blueFloat));
+
+        float greenFloat = (255 - (255 - (float)VectorA[i].greenInt) * (255 - (float)VectorB[i].greenInt) / 255.0f);
+        pixelC.green = ClampConvert(add(greenFloat));
+
+        float redFloat = (255 - (255 - (float)VectorA[i].redInt) * (255 - (float)VectorB[i].redInt) / 255.0f);
+        pixelC.red = ClampConvert(add(redFloat));
+
+        VectorC.push_back(pixelC);
+    }
+    C.AdjustVector(VectorC);
+    return C;
+
+
+}
+
+
+
 
 
