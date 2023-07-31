@@ -72,3 +72,70 @@ void Image::WriteImage(string outFile)
 
 }
 
+
+// Function to access the header
+Image::Header Image::AccessHeader()
+{
+    return header;
+}
+
+
+vector<Pixel> Image::AccessVector()
+{
+    return pixelVector;
+}
+
+
+void Image::AdjustVector(vector<Pixel> &vector)
+{
+    for (unsigned int i = 0; i < vector.size(); i++)
+    {
+        pixelVector.push_back(vector[i]);
+    }
+}
+
+
+void Image::AdjustHeader(Image::Header &HeaderA)
+{
+    header.idLength = HeaderA.idLength;
+    header.colorMapType = HeaderA.colorMapType;
+    header.dataTypeCode = HeaderA.dataTypeCode;
+    header.colorMapOrigin = HeaderA.colorMapOrigin;
+    header.colorMapLength = HeaderA.colorMapLength;
+    header.colorMapDepth = HeaderA.colorMapDepth;
+    header.xOrigin = HeaderA.xOrigin;
+    header.yOrigin = HeaderA.yOrigin;
+    header.width = HeaderA.width;
+    header.height = HeaderA.height;
+    header.bitsPerPixel = HeaderA.bitsPerPixel;
+    header.imageDescriptor = HeaderA.imageDescriptor;
+}
+
+
+void Image::AdjustHeaderValues(int height, int width)
+{
+    header.height = height;
+    header.width = width;
+}
+
+unsigned int Image::ConvertChar(unsigned char value)
+{
+    unsigned int newValue = (unsigned int)(value - '\0');
+    return newValue;
+}
+unsigned char Image::ConvertInt(unsigned int value)
+{
+    unsigned char newValue = (unsigned char)(value + '\0');
+    return newValue;
+}
+
+void Image::SetValues()
+{
+    for (unsigned int i = 0; i < pixelVector.size(); i++)
+    {
+        pixelVector[i].blueInt = ConvertChar(pixelVector[i].blue);
+        pixelVector[i].greenInt = ConvertChar(pixelVector[i].green);
+        pixelVector[i].redInt = ConvertChar(pixelVector[i].red);
+    }
+}
+
