@@ -429,6 +429,78 @@ Image Rotate(Image &A)
 }
 
 
+Image CombineQuadrants(Image &A, Image &B, Image &C, Image &D)
+{
+    Image::Header newHeader = A.AccessHeader();
+    short halfHeight = A.AccessHeader().height;
+    short halfWidth = A.AccessHeader().width;
+    short totalHeight = halfHeight * 2;
+    short totalWidth = halfWidth * 2;
+
+    Image newImage;
+    newImage.AdjustHeader(newHeader);
+    newImage.AdjustHeaderValues(totalHeight, totalWidth);
+
+    vector<Pixel> VectorA = A.AccessVector();
+    vector<Pixel> VectorB = B.AccessVector();
+    vector<Pixel> VectorC = C.AccessVector();
+    vector<Pixel> VectorD = D.AccessVector();
+    vector<Pixel> newVector;
+
+
+
+    for (unsigned int i = 0; i < halfHeight; i++)
+    {
+        for (unsigned int j = 0; j < halfWidth; j++)
+        {
+            Pixel PixelA;
+
+            PixelA.blue = VectorA[i * halfWidth + j].blue;
+            PixelA.green = VectorA[i * halfWidth + j].green;
+            PixelA.red = VectorA[i * halfWidth + j].red;
+            newVector.push_back(PixelA);
+        }
+        for (unsigned int j = 0; j < halfWidth; j++)
+        {
+            Pixel PixelB;
+
+            PixelB.blue = VectorB[i * halfWidth + j].blue;
+            PixelB.green = VectorB[i * halfWidth + j].green;
+            PixelB.red = VectorB[i * halfWidth + j].red;
+            newVector.push_back(PixelB);
+        }
+
+    }
+
+    for (unsigned int i = 0; i < halfHeight; i++)
+    {
+        for (unsigned int j = 0; j < halfWidth; j++)
+        {
+            Pixel PixelC;
+
+            PixelC.blue = VectorC[i * halfWidth + j].blue;
+            PixelC.green = VectorC[i * halfWidth + j].green;
+            PixelC.red = VectorC[i * halfWidth + j].red;
+            newVector.push_back(PixelC);
+        }
+        for (unsigned int j = 0; j < halfWidth; j++)
+        {
+            Pixel PixelD;
+
+            PixelD.blue = VectorD[i * halfWidth + j].blue;
+            PixelD.green = VectorD[i * halfWidth + j].green;
+            PixelD.red = VectorD[i * halfWidth + j].red;
+            newVector.push_back(PixelD);
+        }
+
+    }
+    newImage.AdjustVector(newVector);
+    return newImage;
+
+}
+
+
+
 
 int main()
 {
@@ -529,6 +601,16 @@ int main()
     Image Part10 = Rotate(Text2);
     Part10.WriteImage("./output/part10.tga");
 
+    // Extra Credit
+    Car.ReadImage("./input/car.tga");
+    Circles.ReadImage("./input/circles.tga");
+    Pattern1.ReadImage("./input/pattern1.tga");
+    Text.ReadImage("./input/text.tga");
+    Image ExtraCredit = CombineQuadrants(Text, Pattern1, Car, Circles);
+    ExtraCredit.WriteImage("./output/extracredit.tga");
+
+    return 0;
+}
 
 
 
