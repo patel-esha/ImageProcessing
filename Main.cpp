@@ -430,4 +430,106 @@ Image Rotate(Image &A)
 
 
 
+int main()
+{
+    Image Car;
+
+    Image Pattern1;
+    Image Pattern2;
+
+    Image Layer1;
+    Image Layer2;
+    Image LayerBlue;
+    Image LayerGreen;
+    Image LayerRed;
+
+    Image Text;
+    Image Text2;
+    Image Circles;
+
+
+    // Part 1
+    Pattern1.ReadImage("./input/pattern1.tga");
+    Layer1.ReadImage("./input/layer1.tga");
+    Image Part1 = Multiply(Pattern1, Layer1);
+    Part1.WriteImage("./output/part1.tga");
+    cout << endl;
+
+
+    // Part 2
+    Car.ReadImage("./input/car.tga");
+    Layer2.ReadImage("./input/layer2.tga");
+    Image Part2 = Subtract(Car, Layer2);
+    Part2.WriteImage("./output/part2.tga");
+    cout << endl;
+
+
+    // Part 3
+    Layer1.ReadImage("./input/layer1.tga");
+    Pattern2.ReadImage("./input/pattern2.tga");
+    Text.ReadImage("./input/text.tga");
+    Image Part3A = Multiply(Pattern2, Layer1);
+    Image Part3B = Screen(Part3A, Text);
+    Part3B.WriteImage("./output/part3.tga");
+    cout << endl;
+
+
+    // Part 4
+    Layer2.ReadImage("./input/layer2.tga");
+    Circles.ReadImage("./input/circles.tga");
+    Pattern2.ReadImage("./input/pattern2.tga");
+    Image Part4A = Multiply(Circles, Layer2);
+    Image Part4B = Subtract(Part4A, Pattern2);
+    Part4B.WriteImage("./output/part4.tga");
+
+
+
+    // Part 5: Combine “layer1.tga” (as the top layer)
+    // with “pattern1.tga” using the Overlay blending mode
+
+    Image Part5 = Overlay(Pattern1, Layer1);
+    Part5.WriteImage("./output/part5.tga");
+
+
+    // Part 6: Load “car.tga” and add 200 to the green channel
+    Image Part6 = AddColor(Car, 0, 200, 0);
+    Part6.WriteImage("./output/part6.tga");
+
+    // Part 7: Load “car.tga” and scale/multiply the red channel by 4
+    // and the blue channel by 0
+    Image Part7 = MultiplyColor(Car, 0, 1, 4);
+    Part7.WriteImage("./output/part7.tga");
+
+
+    // Part 8: Load “car.tga” and write each channel to a separate file
+    // the red channel should be “part8_r.tga”
+    // the green channel should be “part8_g.tga”
+    // the blue channel should be “part8_b.tga”
+    Image BlueChannel = SeparateByChannel(66, Car);
+    Image GreenChannel = SeparateByChannel(71, Car);
+    Image RedChannel = SeparateByChannel(82, Car);
+    BlueChannel.WriteImage("./output/part8_b.tga");
+    GreenChannel.WriteImage("./output/part8_g.tga");
+    RedChannel.WriteImage("./output/part8_r.tga");
+
+    // Part 9: Load “layer_red.tga”, “layer_green.tga” and “layer_blue.tga”
+    // combine the three files into one file
+    // The data from “layer_red.tga” is the red channel of the new image
+    // layer_green is green, and layer_blue is blue.
+    LayerBlue.ReadImage("./input/layer_blue.tga");
+    LayerGreen.ReadImage("./input/layer_green.tga");
+    LayerRed.ReadImage("./input/layer_red.tga");
+    Image Part9 = CombineByChannel(LayerBlue, LayerGreen, LayerRed);
+    Part9.WriteImage("./output/part9.tga");
+
+
+
+    // Part 10: Load “text2.tga”, and rotate it 180 degrees, flipping it upside down
+    Text2.ReadImage("./input/text2.tga");
+    Image Part10 = Rotate(Text2);
+    Part10.WriteImage("./output/part10.tga");
+
+
+
+
 
