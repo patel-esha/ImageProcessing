@@ -210,4 +210,41 @@ Image Overlay(Image &A, Image &B)
 }
 
 
+// Function to add a value to a specific color channel of a TGA image
+
+// Function to add 200 to the green channel of an image
+Image AddColor(Image &A, int blueChannel, int greenChannel, int redChannel)
+{
+    Image B;
+    Image::Header newHeader = A.AccessHeader();
+    B.AdjustHeader(newHeader);
+
+    vector<Pixel> VectorA = A.AccessVector();
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        VectorA[i].blueInt = (int)((VectorA[i].blue) - '\0');
+        VectorA[i].greenInt = (int)((VectorA[i].green) - '\0');
+        VectorA[i].redInt = (int)((VectorA[i].red) - '\0');
+    }
+
+    vector<Pixel> VectorB;
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        Pixel PixelB;
+
+        PixelB.blue = VectorA[i].blue;
+        PixelB.green = ClampConvert(VectorA[i].greenInt + greenChannel);
+        PixelB.red = VectorA[i].red;
+
+        VectorB.push_back(PixelB);
+
+    }
+    B.AdjustVector(VectorB);
+    return B;
+}
+
+
+
 
