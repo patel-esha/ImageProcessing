@@ -246,5 +246,155 @@ Image AddColor(Image &A, int blueChannel, int greenChannel, int redChannel)
 }
 
 
+// Function to multiply a channel by a value
+Image MultiplyColor(Image &A, int blueChannel, int greenChannel, int redChannel)
+{
+    Image B;
+    Image::Header newHeader = A.AccessHeader();
+    B.AdjustHeader(newHeader);
+
+    vector<Pixel> VectorA = A.AccessVector();
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        VectorA[i].blueInt = (int)((VectorA[i].blue) - '\0');
+        VectorA[i].greenInt = (int)((VectorA[i].green) - '\0');
+        VectorA[i].redInt = (int)((VectorA[i].red) - '\0');
+    }
+
+    vector<Pixel> VectorB;
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        Pixel PixelB;
+
+        PixelB.blue = ClampConvert(VectorA[i].blueInt * blueChannel);
+        PixelB.green = ClampConvert(VectorA[i].greenInt * greenChannel);
+        PixelB.red = ClampConvert(VectorA[i].redInt * redChannel);
+
+        VectorB.push_back(PixelB);
+
+    }
+    B.AdjustVector(VectorB);
+    return B;
+}
+
+
+// Function to write each channel to separate files
+Image SeparateByChannel(int AsciiInt, Image &A)
+{
+    Image B;
+    Image::Header newHeader = A.AccessHeader();
+    B.AdjustHeader(newHeader);
+
+
+    vector<Pixel> VectorA = A.AccessVector();
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        VectorA[i].blueUInt = (unsigned int)((VectorA[i].blue) - '\0');
+        VectorA[i].greenUInt = (unsigned int)((VectorA[i].green) - '\0');
+        VectorA[i].redUInt = (unsigned int)((VectorA[i].red) - '\0');
+    }
+
+    vector<Pixel> VectorB;
+
+    for (unsigned int i = 0; i < VectorA.size(); i++)
+    {
+        Pixel PixelB;
+
+        if (AsciiInt == 66) // ASCII value for B representing the BlueChannel
+        {
+            PixelB.blue = VectorA[i].blue;
+            PixelB.green = VectorA[i].blue;
+            PixelB.red = VectorA[i].blue;
+        }
+
+        else if (AsciiInt == 71) // ASCII value for G representing the GreenChannel
+        {
+            PixelB.blue = VectorA[i].green;
+            PixelB.green = VectorA[i].green;
+            PixelB.red = VectorA[i].green;
+        }
+
+        else if (AsciiInt == 82) // ASCII value for R representing the RedChannel
+        {
+            PixelB.blue = VectorA[i].red;
+            PixelB.green = VectorA[i].red;
+            PixelB.red = VectorA[i].red;
+        }
+        VectorB.push_back(PixelB);
+    }
+    B.AdjustVector(VectorB);
+    return B;
+}
+
+
+// Function to combine the channels from different TGA images
+Image CombineByChannel(Image &B, Image &G, Image &R)
+{
+    Image A;
+    Image::Header newHeader = B.AccessHeader();
+    A.AdjustHeader(newHeader);
+
+
+    vector<Pixel> VectorB = B.AccessVector();
+    vector<Pixel> VectorG = G.AccessVector();
+    vector<Pixel> VectorR = R.AccessVector();
+
+    vector<Pixel> CopyVector;
+
+    for (unsigned int i = 0; i < VectorB.size(); i++)
+    {
+        VectorB[i].blueUInt = (unsigned int)((VectorB[i].blue) - '\0');
+        VectorG[i].greenUInt = (unsigned int)((VectorG[i].green) - '\0');
+        VectorR[i].redUInt = (unsigned int)((VectorR[i].red) - '\0');
+    }
+
+    vector<Pixel> VectorA;
+
+    for (unsigned int i = 0; i < VectorB.size(); i++)
+    {
+        Pixel PixelA;
+
+        PixelA.blue = VectorB[i].blueUInt;
+        PixelA.green = VectorG[i].greenUInt;
+        PixelA.red = VectorR[i].redUInt;
+
+        VectorA.push_back(PixelA);
+    }
+    A.AdjustVector(VectorA);
+    return A;
+}
+
+
+// Function to rotate a TGA image 180 degrees
+Image Rotate(Image &A)
+{
+    Image B;
+    Image::Header newHeader = A.AccessHeader();
+    B.AdjustHeader(newHeader);
+
+    vector<Pixel> VectorA = A.AccessVector();
+    vector<Pixel> VectorB;
+
+    int Pixels = newHeader.height * newHeader.width;
+
+    for (int i = Pixels - 1; i >= 0; i--)
+    {
+        Pixel PixelB;
+
+        PixelB.blue = (VectorA[i].blue);
+        PixelB.green = (VectorA[i].green);
+        PixelB.red = (VectorA[i].red);
+
+        VectorB.push_back(PixelB);
+
+    }
+    B.AdjustVector(VectorB);
+    return B;
+}
+
+
 
 
